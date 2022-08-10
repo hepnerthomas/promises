@@ -19,11 +19,20 @@ var fetchProfileAndWriteToFile = function(readFilePath, writeFilePath) {
   // (1) reads a GitHub username from a `readFilePath`
   return pluckFirstLineFromFileAsync(readFilePath)
     .then((user) => getGitHubProfileAsync(user))
-    .then((body) => writeBodyToPath(body, writeFilePath))
+    .then((body) => writeBodyToPath(JSON.stringify(body), writeFilePath))
 };
 
 var writeBodyToPath = function(body, writeFilePath) {
-  return new Promise();
+  var promise = new Promise((resolve, reject) => {
+    fs.writeFile(writeFilePath, body, (err) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(JSON.stringify(body));
+      }
+    });
+  });
+  return promise;
 }
     // .then(function(username) {
     //   if (username === undefined) {
